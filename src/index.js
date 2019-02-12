@@ -95,5 +95,10 @@ process.stdin.on('data', function (text) {
       if (step.chord) player.add(step.ctiming, step.chord.getNotes());
       else player.add(step.ctiming, []);
     }
+
+    console.log("Sequence: ");
+    for(let i = 0; i < player.seq.length; i++) {
+      console.log(i, player.seq[i]);
+    }
   }
 });
