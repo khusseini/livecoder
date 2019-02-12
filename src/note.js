@@ -45,10 +45,7 @@ class Note {
   }
 
   getNumber() {
-    let num =
-      (this.nameToNote(this.name) + this.getModValue(this.mod)) + 12 * this.octave
-    ;
-    return num;
+    return (this.nameToNote(this.name) + this.getModValue(this.mod)) + 12 * this.octave;
   }
 
   nameToNote(name) {

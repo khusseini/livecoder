@@ -47,16 +47,12 @@ class Midi {
   }
 
   setIndex(index) {
-    if (this.o) {
-      this.o.closePorts();
-    }
-    if (this.i) {
-      this.i.closePorts();
-    }
-
     this.o = null;
     this.i = null;
     this.index = index;
+  }
+
+  close() {
   }
 }
 

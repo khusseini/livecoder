@@ -1,4 +1,4 @@
-import Chord from './chord.js';
+import {Chord} from './chord.js';
 
 const seqRegex = /([^@]*)@(\d+\/\d+)/i;
 

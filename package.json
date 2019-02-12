@@ -2,28 +2,25 @@
   "name": "livecoder",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "molotoz",
-  "license": "MIT",
+  "author": "khusseini",
+  "license": "GPL-3.0",
   "dependencies": {
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
     "easymidi": "^1.0.1",
     "midi": "^0.9.5"
   },
-  "preferGlobal": true,
-  "bin": {
-    "filesearch": "index.js"
-  },
   "devDependencies": {
-    "@babel/preset-env": "^7.3.1",
     "ava": "^1.2.1",
-    "babel-register": "^6.26.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "babel-register": "^6.26.0"
   },
   "scripts": {
     "test": "ava tests/**/*.test.js --verbose",
     "watch": "nodemon --exec babel-node src/index.js",
-    "start": "node src/index.js"
+    "start": "babel-node src/index.js",
+    "setup": "yarn install --production=true"
   },
   "ava": {
     "require": [

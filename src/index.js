@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 import Note from './note.js';
 import {seqRegex, Sequence} from "./sequence.js";
 import Midi from "./midi.js";

@@ -52,7 +52,6 @@ class Player {
 
     this.seq[this._start] = st;
     this.seq[end] = e;
-    console.log(timing, this.seq, this._start, end);
     this._start = end+1;
   }
 
