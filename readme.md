@@ -14,9 +14,13 @@ yarn watch
 
 Type in any of the following commands to execute:
 
-- `conf`: Select a Midi Device
-- `start`: Start sequence
-- `stop`: Stop sequence
+- `:conf`: Select a Midi Device
+- `:start`: Start sequence
+- `:stop`: Stop sequence
+- `:1-n`: Select channel
+- `:jam((i|ii|iii|iv|v|vi|vii)+)`: Generate chord progressions with given chords
+- `:hist`: List previous sequences
+- `:hist(\d+)`: Use previous sequences
 - `quit`: Quit
 
 ## Sequences
