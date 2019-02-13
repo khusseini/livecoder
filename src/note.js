@@ -35,6 +35,7 @@ class Note {
     const parts = /([a-z])(#|b)?(-[1-3]|[1-8])?/i.exec(name);
     this.name = parts[1];
     this.mod = parts[2];
+    this.offset = 0;
     if (this.mod === undefined) {
       this.mod = '';
     }

@@ -2,23 +2,39 @@ import Note from './note.js';
 import {seqRegex, Sequence} from "./sequence.js";
 import Midi from "./midi.js";
 import Player from "./player";
+import shuffle from 'shuffle-array';
+import {chordMods} from "./chord.js";
 
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
 const midi = new Midi();
-const player = new Player(
-  (n) => midi.sendOn(n),
-  (n) => midi.sendOff(n)
-);
+const players = [];
+let player = null;
 
+selectChannel(1);
+
+const history = [];
 const options = {
   root: new Note('C2'),
+  tpb: 24
 };
 
 console.log("");
 console.log("Welcome to Livecoder!");
 console.log("");
+
+function selectChannel(channel) {
+  console.log("Selecting channel ", channel);
+  player = players[channel];
+
+  if (!player) {
+    player = players[channel] = new Player(
+      (n) => midi.sendOn(n, channel),
+      (n) => midi.sendOff(n, channel)
+    );
+  }
+}
 
 function selectDevice() {
   console.log('Select a midi device');
@@ -33,72 +49,145 @@ function selectDevice() {
       const input = midi.getSelectedInput();
 
       input.on('start', () => {
-        player.play();
+        players.forEach((i) => i.play());
         console.log('player started');
       });
 
       input.on('continue', () => {
-        player.play();
-        console.log('player started');
+        players.forEach((i) => i.play());
+        console.log('player continued');
       });
 
       input.on('stop', () => {
-        player.stop();
+        players.forEach((i) => i.stop());
         console.log('player stopped');
       });
 
       input.on('reset', () => {
-        player.stop(true);
+        players.forEach((i) => i.stop());
         console.log('player reset')
       });
 
       input.on('clock', () => {
-        player.tick();
+        players.forEach((i) => i.tick());
       });
     }
   });
+  selectChannel(1);
 }
 
 function done() {
-  player.stop();
-  midi.close();
+  players.forEach((i) => i.stop());
   console.log('Bye!!');
   process.exit();
 }
 
 process.stdin.on('data', function (text) {
-  if (text === 'quit\n') {
+  if (/: *quit/.test(text)) {
     done();
     return;
   }
 
-  if (text == 'start\n') {
-    player.play();
+  if (/: *start/.test(text)) {
+    players.forEach((i) => i.play());
     return;
   }
 
-  if (text == 'stop\n') {
-    player.stop();
+  if (/: *stop/.test(text)) {
+    players.forEach((i) => i.stop());
     return;
   }
 
-  if (text === 'conf\n') {
+  if (/: *conf/.test(text)) {
     selectDevice();
     return;
   }
 
-  if (seqRegex.test(text)) {
-    player.reset();
-    const seq = new Sequence(options.root, text);
-    for (let i = 0; i < seq.sequence.length; i++) {
-      const step = seq.sequence[i];
-      if (step.chord) player.add(step.ctiming, step.chord.getNotes());
-      else player.add(step.ctiming, []);
+  if (/: *set *([^=]+)=(.*)/.test(text)) {
+    const parts = /: *set *([^=]+)=(.*)/.exec(text);
+    const key = parts[1];
+    let value = parts[2];
+
+    if (!options.hasOwnProperty(key)) {
+      console.log('Option '+key+' does not exists');
+      return;
     }
 
-    console.log("Sequence: ");
-    for(let i = 0; i < player.seq.length; i++) {
-      console.log(i, player.seq[i]);
+    if (key === 'root') {
+      value = new Note(value);
+    }
+
+    if (key === 'tpb') {
+      player.ticksPerBeat = value;
+    }
+
+    options[key] = value;
+    console.log("Updated option "+key, options[key]);
+  }
+
+  function renderSection(subject, c) {
+    let rendered = '';
+    for(let i = 0; i < subject.length; i++) {
+      const useMod = Math.random() > 0.5;
+      let mod = '';
+      if (useMod) {
+        const mods = Object.keys(chordMods);
+        const index = Math.floor(Math.random() * mods.length-1);
+        mod = mods[index];
+        if (!mod) {
+          mod = mods[0];
+        }
+      }
+      rendered += c[subject[i]] + mod +"@1/4 ";
+    }
+
+    return rendered;
+  }
+
+  if (/: *hist(\(\d+\))?/.test(text)) {
+    const parts = /: *hist(?:\((\d+)\))?/.exec(text);
+    if (history.length && typeof parts[1] === 'string') {
+      text = history[Number(parts[1])];
+    } else {
+      for(let i = 0; i < history.length; i++) {
+        console.log(i, history[i]);
+      }
+    }
+  }
+
+  if (/: *(\d+)/.test(text)) {
+    const channel = /: *(\d+)/.exec(text)[1];
+
+    selectChannel(channel);
+  }
+
+  if (/: *jam\(([^)]+)\)/.test(text)) {
+    const chords = /: *jam\(([^)]+)\)/.exec(text)[1].split(' ');
+    const a = Array(chords.length).fill(0).map((x,y) => y);
+    const b = shuffle(a, {copy: true});
+    let rendered = '';
+    rendered += renderSection(a, chords);
+    rendered += renderSection(b, chords);
+    text = rendered;
+  }
+
+  if (seqRegex.test(text)) {
+    console.log('Sequencing...', text);
+    history.push(text);
+    player.reset();
+    const seq = new Sequence(text);
+    for (let i = 0; i < seq.sequence.length; i++) {
+      const step = seq.sequence[i];
+      if (step.chord) player.append(
+        step.lengthFloat,
+        step.chord.getNotes(
+          options.root,
+          function(note, j) {
+
+          }
+        )
+      );
+      else player.append(step.lengthFloat, []);
     }
   }
 });

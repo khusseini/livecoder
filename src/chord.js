@@ -76,8 +76,7 @@ const chordMods = {
 const splitRegex = /^([iv]+)(.*)$/i;
 
 class Chord {
-  constructor(key, identifier, scale = [0,2,4,5,7,9,11]) {
-    this.key = key;
+  constructor(identifier, scale = [0,2,4,5,7,9,11]) {
     this.identifier = identifier;
     this.scale = scale;
 
@@ -89,8 +88,8 @@ class Chord {
     }
   }
 
-  getNotes() {
-    const root = this.key.getNumber() + this.scale[iMap[this.index]];
+  getNotes(key, modifier = null) {
+    const root = key.getNumber() + this.scale[iMap[this.index]];
     const mod = chordMods[this.mod];
     if (!mod) {
       throw "Mod " + this.mod + " not supported";
@@ -99,10 +98,14 @@ class Chord {
     let notes = [];
     for(let i = 0; i < mod.length; ++i) {
       const n = Note.fromNumber(root + mod[i]);
+      if (modifier) {
+        modifier(n, i);
+      }
       notes.push(n);
     }
+
     return notes;
   }
 }
 
-export {Chord, chordMods};
+export {Chord, chordMods, splitRegex};

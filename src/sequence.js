@@ -1,10 +1,9 @@
-import {Chord} from './chord.js';
+import {Chord, splitRegex} from './chord.js';
 
 const seqRegex = /([^@]*)@(\d+\/\d+)/i;
 
 class Sequence {
-  constructor(key, sequence) {
-    this.key = key;
+  constructor(sequence) {
     this.sequence = [];
     const steps = sequence.split(' ');
     this.length = 0;
@@ -12,18 +11,19 @@ class Sequence {
     for(let i = 0; i < steps.length; ++i) {
       if (!seqRegex.test(steps[i])) continue;
       const parts = steps[i].split('@');
-      let timing = parts[1].split('/');
-      timing = timing[0]/timing[1];
-      this.length += timing;
+      let noteLength = parts[1].split('/');
+      noteLength = noteLength[0]/noteLength[1];
+      this.length += noteLength;
       let chord = null;
 
-      if (parts[0]) {
-        chord = new Chord(this.key, parts[0]);
+      if (splitRegex.test(parts[0])) {
+        chord = new Chord(parts[0]);
       }
+
       this.sequence.push({
         chord: chord,
-        timing: parts[1],
-        ctiming: timing,
+        noteLength: parts[1],
+        lengthFloat: noteLength,
       });
     }
   }

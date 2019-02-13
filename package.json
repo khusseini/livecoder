@@ -8,18 +8,21 @@
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
+    "commander": "^2.19.0",
     "easymidi": "^1.0.1",
-    "midi": "^0.9.5"
+    "inquirer": "^6.2.2",
+    "midi": "^0.9.5",
+    "shuffle-array": "^1.0.1"
   },
   "devDependencies": {
     "ava": "^1.2.1",
-    "nodemon": "^1.18.10",
-    "babel-register": "^6.26.0"
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.18.10"
   },
   "scripts": {
     "test": "ava tests/**/*.test.js --verbose",
-    "watch": "nodemon --exec babel-node src/index.js",
-    "start": "babel-node src/index.js",
+    "watch": "nodemon --exec babel-node src/index.js run",
+    "start": "babel-node src/index.js run",
     "setup": "yarn install --production=true"
   },
   "ava": {

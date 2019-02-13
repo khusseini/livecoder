@@ -7,7 +7,6 @@ class Midi {
     this.index = 0;
     this.o = null;
     this.i = null;
-    this.channel = 1;
   }
 
   getSelectedOutput() {
@@ -18,23 +17,24 @@ class Midi {
     return this.o;
   }
 
-  sendOn(notes) {
+  sendOn(notes, channel = 1) {
     for(let i = 0; i < notes.length; i++) {
-      this.send('noteon', notes[i]);
+      this.send('noteon', notes[i], channel);
     }
   }
 
-  send(action, note, vel = 127) {
-    this.getSelectedOutput().send(action, {
+  send(action, note, channel = 1, vel = 127) {
+    const data = {
       note: note.getNumber(),
       velocity: vel,
-      channel: this.channel
-    });
+      channel: Number(channel)
+    };
+    this.getSelectedOutput().send(action, data);
   }
 
-  sendOff(notes) {
+  sendOff(notes, channel = 1) {
     for(let i = 0; i < notes.length; i++) {
-      this.send('noteoff', notes[i]);
+      this.send('noteoff', notes[i], channel);
     }
   }
 
