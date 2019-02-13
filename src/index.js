@@ -26,6 +26,7 @@ console.log("");
 
 function selectChannel(channel) {
   console.log("Selecting channel ", channel);
+  channel--;
   player = players[channel];
 
   if (!player) {
@@ -115,6 +116,7 @@ process.stdin.on('data', function (text) {
 
     if (key === 'root') {
       value = new Note(value);
+      console.log("Root Note", value.getNumber());
     }
 
     if (key === 'tpb') {

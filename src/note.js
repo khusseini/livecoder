@@ -39,8 +39,9 @@ class Note {
     if (this.mod === undefined) {
       this.mod = '';
     }
-    this.octave = Number.parseInt(parts[3]);
-    if (Number.isNaN(this.octave)) {
+    if (parts[3]) {
+      this.octave = Number.parseInt(parts[3]);
+    } else {
       this.octave = 0;
     }
   }

@@ -58,8 +58,8 @@ test(
   });
 
 test(
-  'Ocatves -3 to 8', t => {
-    for (let i = -3; i <= 8; ++i) {
+  'Ocatves -2 to 8', t => {
+    for (let i = -2; i <= 8; ++i) {
       let c = 60;
 
       for (let index in possibleNotes) {
