@@ -11,8 +11,9 @@
     "commander": "^2.19.0",
     "easymidi": "^1.0.1",
     "inquirer": "^6.2.2",
-    "midi": "^0.9.5",
-    "shuffle-array": "^1.0.1"
+    "shuffle-array": "^1.0.1",
+    "string-format": "^2.0.0",
+    "terminal-kit": "^1.26.11"
   },
   "devDependencies": {
     "ava": "^1.2.1",

@@ -7,21 +7,19 @@ yarn setup
 yarn start
 # development
 yarn install
-yarn watch
+yarn start
 ```
 
 # Usage
 
-Type in any of the following commands to execute:
+In order to enter command mode simply type in `:`,
+when the application starts. Press `ESC` to exit the
+mode and `CTRL+C` to exit the application.
 
-- `:conf`: Select a Midi Device
-- `:start`: Start sequence
-- `:stop`: Stop sequence
-- `:1-n`: Select channel
-- `:jam((i|ii|iii|iv|v|vi|vii)+)`: Generate chord progressions with given chords
-- `:hist`: List previous sequences
-- `:hist(\d+)`: Use previous sequences
-- `quit`: Quit
+Currently the following commands are available:
+- `dev`: Select MIDI device
+- `ch(n)`: Select output channel
+- `hist`: Select previously used sequences
 
 ## Sequences
 
@@ -38,3 +36,9 @@ Example:
 ```
 i@1/4 v@1/8 vi@1/8 ii@1/4 iii@1/4
 ```
+
+Or Single Notes:
+```
+C@1/4 A3@1/8
+```
+
