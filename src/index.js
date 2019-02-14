@@ -44,6 +44,15 @@ const commandInput = new CommandInput({x: 0, y: term.height}, term.width,
 const commands = [
   new cmd.SelectDeviceCommand(commandInput, infoWindow),
   new cmd.SetChannelCommand(commandInput, infoWindow),
+  new cmd.ClockCommand(commandInput, infoWindow, {
+    tick: (p) => {
+      livecoder.clock();
+      livecoder.midi.getSelectedOutput().send('clock');
+      livecoder.midi.getSelectedOutput().send('position', p);
+    },
+    start: () => { livecoder.play(); },
+    stop: () => { livecoder.stop() }
+  }),
   new cmd.HistoryCommand(commandInput, infoWindow),
   new cmd.ParseSequenceCommand(commandInput, infoWindow),
 ];

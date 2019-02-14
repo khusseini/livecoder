@@ -1,5 +1,6 @@
 import {seqRegex} from "./sequence.js";
 import format from 'string-format';
+import MidiClock from 'midi-clock';
 
 /** base **/
 class Command {
@@ -19,7 +20,7 @@ class Command {
   }
 
   static funcRegEx(name) {
-    return new RegExp(name+'(\\([^)]+\\))');
+    return new RegExp(name+'\\(([^)]+)\\)');
   }
 
   static cmdRegEx(name) {
@@ -133,9 +134,53 @@ class HistoryCommand extends Command {
   }
 }
 
+/** clock(start|stop|n) **/
+class ClockCommand extends Command {
+  constructor(input, output, callbacks) {
+    super('clock', input, output);
+    this.regex = Command.funcRegEx(this.name);
+    this.clock = MidiClock();
+    this.clock.on('position', callbacks.tick);
+    this.callbacks = callbacks;
+    this.clock.setTempo(110);
+  }
+
+  setTempo(tempo) {
+    this.clock.setTempo(tempo);
+  }
+
+  run(text, livecoder, term) {
+    const r = this.regex.exec(text);
+    if (r[1] === 'start') {
+      if (this.callbacks.start) {
+        this.callbacks.start();
+      }
+      this.input.showInfo('Clock started', term);
+      this.clock.start();
+    }
+
+    if (r[1] === 'stop') {
+      if (this.callbacks.stop) {
+        this.callbacks.stop();
+      }
+      this.input.showInfo('Clock stopped', term);
+      this.clock.stop();
+    }
+
+    const tempo = Number.parseInt(r[1]);
+    if (!Number.isNaN(tempo)) {
+      this.setTempo(tempo);
+      this.input.showInfo(format('Clock set to {0}', tempo), term);
+    }
+
+    return text;
+  }
+}
+
 export {
   SelectDeviceCommand,
   ParseSequenceCommand,
   SetChannelCommand,
-  HistoryCommand
+  HistoryCommand,
+  ClockCommand
 };

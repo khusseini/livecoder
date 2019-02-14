@@ -69,7 +69,6 @@ class Player {
       this.seq[start] = startFrame;
       this.seq[end] = endFrame;
     }
-
     this.lastIndex += framesPerNoteLength;
   }
 
