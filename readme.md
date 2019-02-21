@@ -1,3 +1,5 @@
+##NOTE: This repository is just a proof of concept. Because of too high delay in the midi I/O I opted for a python implementation: https://github.com/khusseini/livecoder-py
+
 # Installation
 
 1. Clone repository
